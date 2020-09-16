@@ -41,11 +41,32 @@ suite('Functional Tests', function() {
     suite('POST /api/books with title => create book object/expect book object', function() {
       
       test('Test POST /api/books with title', function(done) {
-        //done();
+        chai.request(server)
+          .post('/api/books')
+          .send({
+            title: 'The lord of the rings'
+          })
+          .end(function(err, res){
+
+            assert.equal(res.status, 200);
+            assert.isObject(res.body, 'response should be an object');
+            assert.isNotNull(res.body._id, '_id should be present');
+            assert.equal(res.body.title, 'The lord of the rings')
+            done();
+          })
       });
       
       test('Test POST /api/books with no title given', function(done) {
-        //done();
+        chai.request(server)
+          .post('/api/books')
+          .send({ })
+          .end(function(err, res){
+
+            assert.equal(res.status, 200);
+            assert.isString(res.text, 'response should be a string');
+            assert.equal(res.text, 'missing title');
+            done();
+          })
       });
       
     });
@@ -54,7 +75,16 @@ suite('Functional Tests', function() {
     suite('GET /api/books => array of books', function(){
       
       test('Test GET /api/books',  function(done){
-        //done();
+        chai.request(server)
+        .get('/api/books')
+        .end(function(err, res){
+          assert.equal(res.status, 200);
+          assert.isArray(res.body, 'response should be an array');
+          assert.property(res.body[0], 'commentcount', 'Books in array should contain commentcount');
+          assert.property(res.body[0], 'title', 'Books in array should contain title');
+          assert.property(res.body[0], '_id', 'Books in array should contain _id');
+          done();
+        });
       });      
       
     });
@@ -63,11 +93,36 @@ suite('Functional Tests', function() {
     suite('GET /api/books/[id] => book object with [id]', function(){
       
       test('Test GET /api/books/[id] with id not in db',  function(done){
-        //done();
+        chai.request(server)
+        .get('/api/books/123456789012')
+        .end(function(err, res){
+
+          assert.equal(res.status, 200);
+          assert.isString(res.text, 'response should be a string');
+          assert.equal(res.text, 'no book exists');
+          done();
+        })
       });
       
       test('Test GET /api/books/[id] with valid id in db',  function(done){
-        //done();
+        chai.request(server)
+        .post('/api/books')
+        .send({
+          title: 'Infinite jest'
+        })
+        .end(function(err, res){
+          chai.request(server)
+          .get(`/api/books/${res.body._id}`)
+          .end(function(err, res2){
+  
+            assert.isObject(res2.body, 'response should be an object');
+            assert.isNotNull(res2.body._id, '_id should be present');
+            assert.equal(res2.body.title, 'Infinite jest');
+            assert.isArray(res2.body.comments, 'comments should be an array');
+            done();
+          })
+         
+        })
       });
       
     });
@@ -76,7 +131,27 @@ suite('Functional Tests', function() {
     suite('POST /api/books/[id] => add comment/expect book object with id', function(){
       
       test('Test POST /api/books/[id] with comment', function(done){
-        //done();
+        chai.request(server)
+        .post('/api/books')
+        .send({
+          title: 'Infinite jest'
+        })
+        .end(function(err, res){
+          chai.request(server)
+          .post(`/api/books/${res.body._id}`)
+          .send({
+            comment: 'how cool!'
+          })
+          .end(function(err, res2){
+  
+            assert.isObject(res2.body, 'response should be an object');
+            assert.isNotNull(res2.body._id, '_id should be present');
+            assert.equal(res2.body.title, 'Infinite jest');
+            assert.isArray(res2.body.comments, 'comments should be an array');
+            done();
+          })
+         
+        })
       });
       
     });

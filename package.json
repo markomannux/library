@@ -4,18 +4,22 @@
 	"description": "boilerplate",
 	"main": "server.js",
 	"scripts": {
-		"start": "node server.js"
+		"start": "node server.js",
+		"test": "NODE_ENV=test nodemon server.js"
 	},
 	"dependencies": {
-		"express": "^4.14.0",
-		"cors": "^2.8.1",
 		"body-parser": "^1.15.2",
 		"chai": "^3.5.0",
-		"mongodb": "^2.2.16",
 		"chai-http": "^3.0.0",
+		"cors": "^2.8.1",
+		"dotenv": "^8.2.0",
+		"express": "^4.14.0",
+		"helmet": "^3.1.0",
 		"mocha": "^3.2.0",
-		"zombie": "^5.0.5",
-		"helmet": "^3.1.0"
+		"mongodb": "^2.2.16",
+		"mongoose": "^5.10.5",
+		"nodemon": "^2.0.4",
+		"zombie": "^5.0.5"
 	},
 	"engines": {
 		"node": "4.4.3"
